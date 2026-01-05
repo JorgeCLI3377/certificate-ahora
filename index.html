@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertificaAlimentos - Certificaciones Profesionales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            DEFAULT: '#0A2342',
+                            dark: '#051A33',
+                            light: '#1E3A59'
+                        },
+                        gold: {
+                            DEFAULT: '#D5A021',
+                            light: '#F3CB65',
+                            dark: '#A07812'
+                        },
+                        light: {
+                            DEFAULT: '#F5F7FA',
+                            gray: '#E5E9F0'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Merriweather', 'serif'],
+                        sans: ['Open Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style id="app-style">
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #F5F7FA;
+            color: #1a202c;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Merriweather', serif;
+        }
+
+        .hero-pattern {
+            background-image: url('https://cdn.pixabay.com/photo/2017/08/05/12/33/flat-lay-2583213_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-pattern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(10, 35, 66, 0.85);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-container {
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #D5A021;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .registration-item {
+            transition: background-color 0.3s ease;
+        }
+
+        .registration-item:hover {
+            background-color: rgba(213, 160, 33, 0.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .btn-gold {
+            background-color: #D5A021;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background-color: #A07812;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D5A021;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <header class="bg-navy shadow-md">
+        <nav class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-certificate text-gold-light text-2xl mr-3"></i>
+                <h1 class="text-white text-xl md:text-2xl font-serif font-bold">CertificaAlimentos</h1>
+            </div>
+            <div class="hidden md:flex space-x-6 text-white font-sans">
+                <a href="javascript:void(0)" class="hover:text-gold-light transition-colors">Inicio</a>
+                <a href="javascript:void(0)" class="hover:text-gold-light transition-colors">Cursos</a>
+                <a href="javascript:void(0)" class="hover:text-gold-light transition-colors">Mis Certificados</a>
+                <a href="javascript:void(0)" class="hover:text-gold-light transition-colors">Contacto</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-navy-dark px-4 py-2 animate-fadeIn">
+            <a href="javascript:void(0)" class="block py-2 text-white hover:text-gold-light transition-colors">Inicio</a>
+            <a href="javascript:void(0)" class="block py-2 text-white hover:text-gold-light transition-colors">Cursos</a>
+            <a href="javascript:void(0)" class="block py-2 text-white hover:text-gold-light transition-colors">Mis Certificados</a>
+            <a href="javascript:void(0)" class="block py-2 text-white hover:text-gold-light transition-colors">Contacto</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern py-16 md:py-24">
+        <div class="container mx-auto px-4 hero-content">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">Certificaciones Profesionales en Manejo de Alimentos</h1>
+                <p class="text-lg md:text-xl text-light-gray mb-8">Obtén tu certificación oficial y mejora tus oportunidades laborales en la industria alimentaria.</p>
+                <button class="bg-gold hover:bg-gold-dark text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    Explorar Cursos
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-navy-light inline-block p-4 rounded-full mb-4">
+                        <i class="fas fa-certificate text-gold-light text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-semibold mb-2">Certificación Oficial</h3>
+                    <p class="text-gray-600">Certificados reconocidos a nivel nacional para profesionales en la industria alimentaria.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-navy-light inline-block p-4 rounded-full mb-4">
+                        <i class="fas fa-laptop text-gold-light text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-semibold mb-2">Cursos 100% Online</h3>
+                    <p class="text-gray-600">Completa tu formación desde cualquier lugar y a tu propio ritmo.</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-navy-light inline-block p-4 rounded-full mb-4">
+                        <i class="fas fa-clock text-gold-light text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-semibold mb-2">Rápido y Eficiente</h3>
+                    <p class="text-gray-600">Obtén tu certificado en poco tiempo y comienza a trabajar inmediatamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="py-16 bg-light-gray">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold mb-4">Nuestros Cursos de Certificación</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Descubre nuestra amplia gama de cursos diseñados para profesionales de la industria alimentaria. Todos nuestros programas cumplen con los estándares normativos vigentes.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md relative">
+                    <div class="card-badge">Más popular</div>
+                    <img src="manipulacion-alimentos.jpg" alt="Manipulación de Alimentos" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Manipulación de Alimentos</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 20 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Aprende las técnicas adecuadas de manipulación de alimentos para prevenir la contaminación y garantizar la seguridad alimentaria.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$49.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="manipulacion">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 2 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="productos-HA-higiene-alimentaria.png" alt="Higiene Alimentaria" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Higiene Alimentaria</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 15 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Conoce las mejores prácticas de higiene en la preparación, almacenamiento y servicio de alimentos.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$39.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="higiene">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 3 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="seguridad-alimentaria.jpg" alt="Seguridad Alimentaria" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Seguridad Alimentaria</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 25 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Domina los protocolos de seguridad alimentaria, sistemas HACCP y control de riesgos en establecimientos.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$59.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="seguridad">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 4 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="cuantas-formas-de-conservacion-de-alimentos-existen.jpg" alt="Conservación de Alimentos" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Conservación de Alimentos</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 18 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Aprende técnicas de conservación para extender la vida útil de los alimentos manteniendo su calidad.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$45.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="conservacion">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 5 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="alergenos1.jpg" alt="Control de Alérgenos" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Control de Alérgenos</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 12 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Gestiona correctamente los alérgenos alimentarios para garantizar la seguridad de los consumidores.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$35.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="alergenos">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Card 6 -->
+                <div class="course-card bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="infracciones-a-la-normativa-sanitaria-en-el-registro-y-rotulado.png" alt="Normativa Sanitaria" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-serif font-bold text-xl mb-2">Normativa Sanitaria</h3>
+                        <div class="flex items-center mb-4 text-sm text-gray-600">
+                            <i class="far fa-clock mr-2"></i>
+                            <span>Duración: 22 horas</span>
+                        </div>
+                        <p class="text-gray-700 mb-6">Conoce en detalle la legislación y normativas actuales que regulan la industria alimentaria.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-dark font-bold">$55.990 CLP</span>
+                            <button class="register-btn bg-gold text-white py-2 px-4 rounded hover:bg-gold-dark transition duration-300" data-course="normativa">Inscribirse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Registrations Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold mb-4">Mis Inscripciones</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Gestiona tus cursos inscritos y certificados obtenidos.</p>
+            </div>
+            
+            <div id="no-registrations" class="text-center py-8 hidden">
+                <div class="bg-light-gray p-8 rounded-lg inline-block">
+                    <i class="far fa-folder-open text-gray-400 text-5xl mb-4"></i>
+                    <h3 class="font-serif font-bold text-xl mb-2">No tienes inscripciones activas</h3>
+                    <p class="text-gray-600 mb-4">Inscríbete en un curso para comenzar tu proceso de certificación.</p>
+                    <button class="bg-gold hover:bg-gold-dark text-white font-bold py-2 px-6 rounded transition duration-300">
+                        Ver cursos disponibles
+                    </button>
+                </div>
+            </div>
+            
+            <div id="registrations-list" class="bg-light-gray rounded-lg overflow-hidden shadow-md">
+                <div class="bg-navy text-white p-4">
+                    <div class="grid grid-cols-5 gap-4 font-semibold">
+                        <div>Curso</div>
+                        <div>Fecha de inicio</div>
+                        <div>Estado</div>
+                        <div>Fecha finalización</div>
+                        <div>Acciones</div>
+                    </div>
+                </div>
+                
+                <div id="registrations-container" class="custom-scrollbar" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Registrations will be loaded here from LocalStorage -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-navy text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold mb-4">Testimonios de Estudiantes</h2>
+                <p class="text-light-gray max-w-2xl mx-auto">Conoce la experiencia de profesionales que ya han obtenido su certificación con nosotros.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-navy-light p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-gold">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="mb-4 italic">"El curso de Manipulación de Alimentos me permitió conseguir trabajo en una importante cadena de restaurantes. El contenido es muy completo y la certificación fue rápida."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gold-light rounded-full flex items-center justify-center font-semibold mr-3">CA</div>
+                        <div>
+                            <p class="font-bold">Carlos Andrade</p>
+                            <p class="text-sm text-light-gray">Chef Asistente</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-navy-light p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-gold">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <p class="mb-4 italic">"Excelente plataforma para obtener la certificación. El material es muy didáctico y pude realizar el curso a mi ritmo mientras trabajaba. Muy recomendado."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gold-light rounded-full flex items-center justify-center font-semibold mr-3">MR</div>
+                        <div>
+                            <p class="font-bold">María Rodríguez</p>
+                            <p class="text-sm text-light-gray">Gerente de Cafetería</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-navy-light p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="text-gold">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="mb-4 italic">"Como propietario de un pequeño restaurante, necesitaba certificar a todo mi personal. Esta plataforma nos facilitó enormemente el proceso y ahora cumplimos con todas las normativas."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gold-light rounded-full flex items-center justify-center font-semibold mr-3">JL</div>
+                        <div>
+                            <p class="font-bold">Juan López</p>
+                            <p class="text-sm text-light-gray">Dueño de Restaurante</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-light-gray">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-serif font-bold mb-4">Preguntas Frecuentes</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Encuentra respuestas a las dudas más comunes sobre nuestros cursos y certificaciones.</p>
+            </div>
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-6">
+                    <button class="flex justify-between items-center w-full bg-white p-4 rounded-lg shadow text-left font-serif font-bold text-navy" onclick="toggleFaq(this)">
+                        <span>¿Los certificados son reconocidos oficialmente?</span>
+                        <i class="fas fa-chevron-down text-gold transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer bg-white px-4 overflow-hidden max-h-0 transition-all duration-300">
+                        <div class="py-4 border-t border-gray-200">
+                            <p class="text-gray-700">Sí, todos nuestros certificados cumplen con las normativas vigentes y son reconocidos por las autoridades sanitarias correspondientes. Son válidos para presentar en inspecciones y trámites oficiales.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <button class="flex justify-between items-center w-full bg-white p-4 rounded-lg shadow text-left font-serif font-bold text-navy" onclick="toggleFaq(this)">
+                        <span>¿Cuánto tiempo tengo para completar un curso?</span>
+                        <i class="fas fa-chevron-down text-gold transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer bg-white px-4 overflow-hidden max-h-0 transition-all duration-300">
+                        <div class="py-4 border-t border-gray-200">
+                            <p class="text-gray-700">Una vez inscrito en un curso, tienes 30 días para completarlo. Sin embargo, la mayoría de nuestros estudiantes terminan en una semana aproximadamente, dependiendo del curso elegido.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <button class="flex justify-between items-center w-full bg-white p-4 rounded-lg shadow text-left font-serif font-bold text-navy" onclick="toggleFaq(this)">
+                        <span>¿Cómo obtengo mi certificado una vez finalizado el curso?</span>
+                        <i class="fas fa-chevron-down text-gold transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer bg-white px-4 overflow-hidden max-h-0 transition-all duration-300">
+                        <div class="py-4 border-t border-gray-200">
+                            <p class="text-gray-700">Una vez que completes todas las unidades y apruebes la evaluación final, podrás descargar tu certificado inmediatamente desde tu perfil en formato PDF. También recibirás una copia por correo electrónico.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <button class="flex justify-between items-center w-full bg-white p-4 rounded-lg shadow text-left font-serif font-bold text-navy" onclick="toggleFaq(this)">
+                        <span>¿Los cursos incluyen evaluación?</span>
+                        <i class="fas fa-chevron-down text-gold transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-answer bg-white px-4 overflow-hidden max-h-0 transition-all duration-300">
+                        <div class="py-4 border-t border-gray-200">
+                            <p class="text-gray-700">Sí, todos nuestros cursos incluyen evaluaciones para verificar el aprendizaje. Para obtener tu certificado necesitas aprobar con un mínimo de 70% de respuestas correctas. Puedes intentar la evaluación hasta tres veces.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-navy-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-certificate text-gold-light text-2xl mr-3"></i>
+                        <h3 class="text-xl font-serif font-bold">CertificaAlimentos</h3>
+                    </div>
+                    <p class="text-light-gray mb-4">Soluciones de certificación profesional para la industria alimentaria desde 2010.</p>
+                    <div class="flex space-x-4">
+                        <a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-serif font-bold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">Inicio</a></li>
+                        <li><a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">Cursos</a></li>
+                        <li><a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">Certificaciones</a></li>
+                        <li><a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">Preguntas Frecuentes</a></li>
+                        <li><a href="javascript:void(0)" class="text-light-gray hover:text-gold transition-colors">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-serif font-bold mb-4">Contacto</h4>
+                    <ul class="space-y-2">
+    
+                        
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-gold-light"></i>
+                            <span class="text-light-gray">contacto@certificaalimentos.com</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-serif font-bold mb-4">Boletín Informativo</h4>
+                    <p class="text-light-gray mb-4">Suscríbete para recibir actualizaciones sobre nuevos cursos y normativas.</p>
+                    <form class="flex flex-col space-y-2">
+                        <input type="email" placeholder="Tu correo electrónico" class="p-2 rounded-md text-gray-800 focus:outline-none">
+                        <button class="bg-gold hover:bg-gold-dark text-white py-2 px-4 rounded transition duration-300">Suscribirse</button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-navy-light mt-8 pt-8 text-center text-light-gray">
+                <p>&copy; 2025 CertificaAlimentos. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div id="registration-modal" class="modal fixed inset-0 bg-navy-dark bg-opacity-80 flex items-center justify-center z-50 opacity-0 pointer-events-none">
+        <div class="modal-container bg-white w-full max-w-md mx-4 rounded-lg shadow-lg transform translate-y-8">
+            <!-- Modal Header -->
+            <div class="bg-navy p-4 rounded-t-lg">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-serif font-bold text-white" id="modal-title">Registro para el Curso</h3>
+                    <button id="close-modal" class="text-white hover:text-gold">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Registration Form -->
+            <div id="registration-form-container" class="p-6">
+                <form id="registration-form">
+                    <input type="hidden" id="course-id" name="course-id" value="">
+                    
+                    <div class="mb-4">
+                        <label for="fullname" class="block text-gray-700 font-medium mb-2">Nombre Completo *</label>
+                        <input type="text" id="fullname" name="fullname" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                    </div>
+                     <div class="mb-4">
+                        <label for="id-email" class="block text-gray-700 font-medium mb-2">Correo electronico *</label>
+                        <input type="text" id="id-email" name="id-email" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id-number" class="block text-gray-700 font-medium mb-2">Número de Identificación (Cédula) *</label>
+                        <input type="text" id="id-number" name="id-number" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                    </div>
+                     <div class="mb-4">
+                        <label for="phone-number" class="block text-gray-700 font-medium mb-2">Número de contacto(celular) *</label>
+                        <input type="text" id="id-phone" name="id-phone" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="company-id" class="block text-gray-700 font-medium mb-2">ID de Empresa Afiliada *</label>
+                        <input type="text" id="company-id" name="company-id" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="course-selection" class="block text-gray-700 font-medium mb-2">Curso *</label>
+                        <select id="course-selection" name="course-selection" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gold-light" required>
+                            <option value="">Seleccionar curso</option>
+                            <option value="manipulacion">Manipulación de Alimentos</option>
+                            <option value="higiene">Higiene Alimentaria</option>
+                            <option value="seguridad">Seguridad Alimentaria</option>
+                            <option value="conservacion">Conservación de Alimentos</option>
+                            <option value="alergenos">Control de Alérgenos</option>
+                            <option value="normativa">Normativa Sanitaria</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button type="button" id="cancel-registration" class="mr-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-300">Cancelar</button>
+                        <button type="submit" class="bg-gold text-white px-4 py-2 rounded-md hover:bg-gold-dark transition duration-300">Inscribirme</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Registration Confirmation -->
+            <div id="registration-confirmation" class="p-6 hidden">
+                <div class="text-center">
+                    <div class="mb-6">
+                        <i class="fas fa-check-circle text-green-500 text-5xl"></i>
+                    </div>
+                    <h4 class="text-xl font-serif font-bold mb-2">¡Registro Exitoso!</h4>
+                    <p class="text-gray-700 mb-4">Te has registrado correctamente en el curso.</p>
+                    <p class="font-bold mb-6">Tu curso comenzará el: <span id="course-start-date" class="text-navy"></span></p>
+                    <p class="text-sm text-gray-600 mb-6">Recibirás un correo electrónico con los detalles y el acceso al curso.</p>
+                    <button id="confirm-registration" class="bg-gold text-white px-6 py-2 rounded-md hover:bg-gold-dark transition duration-300">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="certificate-modal" class="modal fixed inset-0 bg-navy-dark bg-opacity-80 flex items-center justify-center z-50 opacity-0 pointer-events-none">
+        <div class="modal-container bg-white w-full max-w-md mx-4 rounded-lg shadow-lg transform translate-y-8">
+            <!-- Modal Header -->
+            <div class="bg-navy p-4 rounded-t-lg">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-serif font-bold text-white">Generando Certificado</h3>
+                    <button class="close-certificate-modal text-white hover:text-gold">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Certificate Loading -->
+            <div id="certificate-loading" class="p-6 text-center">
+                <div class="mb-6">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gold mx-auto"></div>
+                </div>
+                <p class="text-gray-700">Generando tu certificado. Por favor espera...</p>
+            </div>
+            
+            <!-- Certificate Ready -->
+            <div id="certificate-ready" class="p-6 text-center hidden">
+                <div class="mb-6">
+                    <i class="fas fa-file-certificate text-gold text-5xl"></i>
+                </div>
+                <h4 class="text-xl font-serif font-bold mb-2">¡Tu certificado está listo!</h4>
+                <p class="text-gray-700 mb-6">Tu certificado ha sido generado correctamente.</p>
+                <button id="download-certificate" class="bg-gold text-white px-6 py-2 rounded-md hover:bg-gold-dark transition duration-300">
+                    <i class="fas fa-download mr-2"></i> Descargar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script id="app-script">
+        // Course Data
+        const courses = {
+            'manipulacion': {
+                name: 'Manipulación de Alimentos',
+                duration: 20, // hours
+                leadTime: 3 // days until start
+            },
+            'higiene': {
+                name: 'Higiene Alimentaria',
+                duration: 15,
+                leadTime: 2
+            },
+            'seguridad': {
+                name: 'Seguridad Alimentaria',
+                duration: 25,
+                leadTime: 5
+            },
+            'conservacion': {
+                name: 'Conservación de Alimentos',
+                duration: 18,
+                leadTime: 3
+            },
+            'alergenos': {
+                name: 'Control de Alérgenos',
+                duration: 12,
+                leadTime: 2
+            },
+            'normativa': {
+                name: 'Normativa Sanitaria',
+                duration: 22,
+                leadTime: 4
+            }
+        };
+
+        // DOM Elements
+        const registrationModal = document.getElementById('registration-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelRegistrationBtn = document.getElementById('cancel-registration');
+        const registrationForm = document.getElementById('registration-form');
+        const registrationFormContainer = document.getElementById('registration-form-container');
+        const registrationConfirmation = document.getElementById('registration-confirmation');
+        const courseStartDate = document.getElementById('course-start-date');
+        const confirmRegistrationBtn = document.getElementById('confirm-registration');
+        const modalTitle = document.getElementById('modal-title');
+        const courseIdInput = document.getElementById('course-id');
+        const courseSelection = document.getElementById('course-selection');
+        const registerBtns = document.querySelectorAll('.register-btn');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const certificateModal = document.getElementById('certificate-modal');
+        const certificateLoading = document.getElementById('certificate-loading');
+        const certificateReady = document.getElementById('certificate-ready');
+        const downloadCertificateBtn = document.getElementById('download-certificate');
+        const closeCertificateModalBtns = document.querySelectorAll('.close-certificate-modal');
+        
+        const noRegistrationsEl = document.getElementById('no-registrations');
+        const registrationsListEl = document.getElementById('registrations-list');
+        const registrationsContainer = document.getElementById('registrations-container');
+
+        // Initialize the app
+        function initApp() {
+            // Load registrations from localStorage
+            loadRegistrations();
+            
+            // Add event listeners
+            registerBtns.forEach(btn => {
+                btn.addEventListener('click', () => openRegistrationModal(btn.dataset.course));
+            });
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelRegistrationBtn.addEventListener('click', closeModal);
+            confirmRegistrationBtn.addEventListener('click', closeModal);
+            
+            registrationForm.addEventListener('submit', handleRegistrationSubmit);
+            
+            mobileMenuButton.addEventListener('click', toggleMobileMenu);
+            
+            closeCertificateModalBtns.forEach(btn => {
+                btn.addEventListener('click', closeCertificateModal);
+            });
+            
+            downloadCertificateBtn.addEventListener('click', downloadCertificate);
+
+            // Initialize FAQ toggles
+            document.querySelectorAll('.faq-answer').forEach(el => {
+                el.style.maxHeight = '0px';
+            });
+        }
+
+        // Open registration modal
+        function openRegistrationModal(courseId) {
+            // Reset form
+            registrationForm.reset();
+            
+            // Set course ID
+            courseIdInput.value = courseId;
+            
+            // Set course selection
+            if (courseId && courses[courseId]) {
+                courseSelection.value = courseId;
+                modalTitle.textContent = `Registro para ${courses[courseId].name}`;
+            } else {
+                modalTitle.textContent = 'Registro para el Curso';
+            }
+            
+            // Show form, hide confirmation
+            registrationFormContainer.classList.remove('hidden');
+            registrationConfirmation.classList.add('hidden');
+            
+            // Show modal
+            registrationModal.classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            registrationModal.classList.remove('active');
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Handle registration form submission
+        function handleRegistrationSubmit(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const fullname = document.getElementById('fullname').value;
+            const idNumber = document.getElementById('id-number').value;
+            const companyId = document.getElementById('company-id').value;
+            const courseId = courseSelection.value;
+            
+            // Validate form
+            if (!fullname || !idNumber || !companyId || !courseId) {
+                alert('Por favor, completa todos los campos requeridos.');
+                return;
+            }
+            
+            // Calculate start date
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() + courses[courseId].leadTime);
+            
+            // Format date as DD/MM/YYYY
+            const formattedStartDate = `${padZero(startDate.getDate())}/${padZero(startDate.getMonth() + 1)}/${startDate.getFullYear()}`;
+            
+            // Save registration to localStorage
+            const registration = {
+                id: Date.now().toString(),
+                fullname,
+                idNumber,
+                companyId,
+                courseId,
+                courseName: courses[courseId].name,
+                startDate: formattedStartDate,
+                status: 'pendiente',
+                registerDate: `${padZero(today.getDate())}/${padZero(today.getMonth() + 1)}/${today.getFullYear()}`
+            };
+            
+            saveRegistration(registration);
+            
+            // Show confirmation
+            courseStartDate.textContent = formattedStartDate;
+            registrationFormContainer.classList.add('hidden');
+            registrationConfirmation.classList.remove('hidden');
+            
+            // Refresh registrations list
+            loadRegistrations();
+        }
+
+        // Save registration to localStorage
+        function saveRegistration(registration) {
+            let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            registrations.push(registration);
+            localStorage.setItem('registrations', JSON.stringify(registrations));
+        }
+
+        // Load registrations from localStorage
+        function loadRegistrations() {
+            const registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            
+            if (registrations.length === 0) {
+                noRegistrationsEl.classList.remove('hidden');
+                registrationsListEl.classList.add('hidden');
+            } else {
+                noRegistrationsEl.classList.add('hidden');
+                registrationsListEl.classList.remove('hidden');
+                
+                // Clear container
+                registrationsContainer.innerHTML = '';
+                
+                // Add registrations
+                registrations.forEach(registration => {
+                    const row = document.createElement('div');
+                    row.className = 'registration-item grid grid-cols-5 gap-4 p-4 border-b border-gray-200 hover:bg-gray-50';
+                    
+                    // Course name
+                    const courseCell = document.createElement('div');
+                    courseCell.className = 'font-medium';
+                    courseCell.textContent = registration.courseName;
+                    row.appendChild(courseCell);
+                    
+                    // Start date
+                    const startDateCell = document.createElement('div');
+                    startDateCell.textContent = registration.startDate;
+                    row.appendChild(startDateCell);
+                    
+                    // Status
+                    const statusCell = document.createElement('div');
+                    const statusBadge = document.createElement('span');
+                    
+                    if (registration.status === 'pendiente') {
+                        statusBadge.className = 'bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium';
+                        statusBadge.textContent = 'Pendiente';
+                    } else if (registration.status === 'completado') {
+                        statusBadge.className = 'bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium';
+                        statusBadge.textContent = 'Completado';
+                    } else if (registration.status === 'certificado') {
+                        statusBadge.className = 'bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium';
+                        statusBadge.textContent = 'Certificado emitido';
+                    }
+                    
+                    statusCell.appendChild(statusBadge);
+                    row.appendChild(statusCell);
+                    
+                    // Completion date
+                    const completionDateCell = document.createElement('div');
+                    completionDateCell.textContent = registration.completionDate || '-';
+                    row.appendChild(completionDateCell);
+                    
+                    // Actions
+                    const actionsCell = document.createElement('div');
+                    
+                    if (registration.status === 'pendiente') {
+                        const completeBtn = document.createElement('button');
+                        completeBtn.className = 'bg-green-500 hover:bg-green-600 text-white text-xs py-1 px-3 rounded transition duration-300';
+                        completeBtn.textContent = 'Completar Curso';
+                        completeBtn.addEventListener('click', () => completeRegistration(registration.id));
+                        actionsCell.appendChild(completeBtn);
+                    } else if (registration.status === 'completado') {
+                        const certificateBtn = document.createElement('button');
+                        certificateBtn.className = 'bg-gold hover:bg-gold-dark text-white text-xs py-1 px-3 rounded transition duration-300';
+                        certificateBtn.innerHTML = '<i class="fas fa-certificate mr-1"></i> Obtener Certificado';
+                        certificateBtn.addEventListener('click', () => generateCertificate(registration.id));
+                        actionsCell.appendChild(certificateBtn);
+                    } else if (registration.status === 'certificado') {
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.className = 'bg-purple-500 hover:bg-purple-600 text-white text-xs py-1 px-3 rounded transition duration-300';
+                        downloadBtn.innerHTML = '<i class="fas fa-download mr-1"></i> Descargar';
+                        downloadBtn.addEventListener('click', () => downloadCertificateById(registration.id));
+                        actionsCell.appendChild(downloadBtn);
+                    }
+                    
+                    row.appendChild(actionsCell);
+                    
+                    // Add row to container
+                    registrationsContainer.appendChild(row);
+                });
+            }
+        }
+
+        // Complete registration
+        function completeRegistration(id) {
+            let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            const today = new Date();
+            const formattedDate = `${padZero(today.getDate())}/${padZero(today.getMonth() + 1)}/${today.getFullYear()}`;
+            
+            registrations = registrations.map(reg => {
+                if (reg.id === id) {
+                    return {
+                        ...reg,
+                        status: 'completado',
+                        completionDate: formattedDate
+                    };
+                }
+                return reg;
+            });
+            
+            localStorage.setItem('registrations', JSON.stringify(registrations));
+            loadRegistrations();
+        }
+
+        // Generate certificate
+        function generateCertificate(id) {
+            // Get registration
+            const registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            const registration = registrations.find(reg => reg.id === id);
+            
+            if (!registration) return;
+            
+            // Show certificate modal
+            certificateModal.classList.add('active');
+            certificateLoading.classList.remove('hidden');
+            certificateReady.classList.add('hidden');
+            
+            // Simulate API call
+            setTimeout(() => {
+                certificateLoading.classList.add('hidden');
+                certificateReady.classList.remove('hidden');
+                
+                // Update registration status
+                const updatedRegistrations = registrations.map(reg => {
+                    if (reg.id === id) {
+                        return {
+                            ...reg,
+                            status: 'certificado'
+                        };
+                    }
+                    return reg;
+                });
+                
+                localStorage.setItem('registrations', JSON.stringify(updatedRegistrations));
+                
+                // Store the current certificate ID for download
+                localStorage.setItem('currentCertificateId', id);
+                
+                // Refresh registrations list
+                loadRegistrations();
+            }, 2000);
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            const id = localStorage.getItem('currentCertificateId');
+            downloadCertificateById(id);
+            closeCertificateModal();
+        }
+
+        // Download certificate by ID
+        function downloadCertificateById(id) {
+            const registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+            const registration = registrations.find(reg => reg.id === id);
+            
+            if (!registration) return;
+            
+            // In a real application, this would trigger a download
+            alert(`Descargando certificado para ${registration.fullname} del curso ${registration.courseName}`);
+        }
+
+        // Close certificate modal
+        function closeCertificateModal() {
+            certificateModal.classList.remove('active');
+        }
+
+        // Toggle FAQ
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.style.maxHeight === '0px') {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.classList.add('transform', 'rotate-180');
+            } else {
+                answer.style.maxHeight = '0px';
+                icon.classList.remove('transform', 'rotate-180');
+            }
+        }
+
+        // Utility: Pad zero
+        function padZero(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
