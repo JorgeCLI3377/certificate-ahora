@@ -798,53 +798,59 @@
             mobileMenu.classList.toggle('hidden');
         }
 
+    
         // Handle registration form submission
-        function handleRegistrationSubmit(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const fullname = document.getElementById('fullname').value;
-            const idNumber = document.getElementById('id-number').value;
-            const companyId = document.getElementById('company-id').value;
-            const courseId = courseSelection.value;
-            
-            // Validate form
-            if (!fullname || !idNumber || !companyId || !courseId) {
-                alert('Por favor, completa todos los campos requeridos.');
-                return;
-            }
-            
-            // Calculate start date
-            const today = new Date();
-            const startDate = new Date(today);
-            startDate.setDate(today.getDate() + courses[courseId].leadTime);
-            
-            // Format date as DD/MM/YYYY
-            const formattedStartDate = `${padZero(startDate.getDate())}/${padZero(startDate.getMonth() + 1)}/${startDate.getFullYear()}`;
-            
-            // Save registration to localStorage
-            const registration = {
-                id: Date.now().toString(),
-                fullname,
-                idNumber,
-                companyId,
-                courseId,
-                courseName: courses[courseId].name,
-                startDate: formattedStartDate,
-                status: 'pendiente',
-                registerDate: `${padZero(today.getDate())}/${padZero(today.getMonth() + 1)}/${today.getFullYear()}`
-            };
-            
-            saveRegistration(registration);
-            
-            // Show confirmation
-            courseStartDate.textContent = formattedStartDate;
-            registrationFormContainer.classList.add('hidden');
-            registrationConfirmation.classList.remove('hidden');
-            
-            // Refresh registrations list
-            loadRegistrations();
-        }
+function handleRegistrationSubmit(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const fullname = document.getElementById('fullname').value;
+    const idNumber = document.getElementById('id-number').value;
+    const companyId = document.getElementById('company-id').value; // ID ingresado por el usuario
+    const courseId = courseSelection.value;
+    
+    // VALIDACIÓN DE EMPRESA AFILIADA
+    const ID_EMPRESA_AUTORIZADA = "67268379"; // El ID que solicitaste
+    
+    if (companyId !== ID_EMPRESA_AUTORIZADA) {
+        alert('ID de Empresa no válido. Solo personal de empresas afiliadas con convenio activo pueden registrarse.');
+        return; // Detiene el proceso si el ID es incorrecto
+    }
+    
+    // Validar que el resto de campos no estén vacíos
+    if (!fullname || !idNumber || !courseId) {
+        alert('Por favor, completa todos los campos requeridos.');
+        return;
+    }
+    
+    // Si pasa la validación, procedemos con el registro
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() + courses[courseId].leadTime);
+    
+    const formattedStartDate = `${padZero(startDate.getDate())}/${padZero(startDate.getMonth() + 1)}/${startDate.getFullYear()}`;
+    
+    const registration = {
+        id: Date.now().toString(),
+        fullname,
+        idNumber,
+        companyId,
+        courseId,
+        courseName: courses[courseId].name,
+        startDate: formattedStartDate,
+        status: 'pendiente',
+        registerDate: `${padZero(today.getDate())}/${padZero(today.getMonth() + 1)}/${today.getFullYear()}`
+    };
+    
+    saveRegistration(registration);
+    
+    // Mostrar confirmación
+    courseStartDate.textContent = formattedStartDate;
+    registrationFormContainer.classList.add('hidden');
+    registrationConfirmation.classList.remove('hidden');
+    
+    loadRegistrations();
+}
 
         // Save registration to localStorage
         function saveRegistration(registration) {
